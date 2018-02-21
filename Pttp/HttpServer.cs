@@ -12,6 +12,7 @@ namespace Pttp
         #region Variable
         private Socket _socket;
         private IPEndPoint _host;
+        private int _backlog = 100;
         #endregion
 
         #region Property
@@ -31,6 +32,9 @@ namespace Pttp
             get => _host?.Port ?? 0;
         }
 
+        /// <summary>
+        /// 원본 Socket 객체입니다.
+        /// </summary>
         public Socket OriginalSocket
         {
             get => _socket;
@@ -46,6 +50,41 @@ namespace Pttp
         {
             _host = new IPEndPoint(ip, port);
             _socket = new Socket(_host.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
+        }
+
+        /// <summary>
+        /// Socket 의 Backlog 값을 설정합니다.
+        /// </summary>
+        /// <param name="backlog"></param>
+        public HttpServer Backlog(int backlog)
+        {
+            _backlog = backlog;
+
+            return this;
+        }
+
+        public void Start()
+        {
+            if (_socket == null)
+            {
+                throw new ArgumentException("HttpServer 소켓이 정의되지 않았습니다.");
+            }
+
+            try
+            {
+                // 소켓 시작
+                _socket.Bind(_host);
+                _socket.Listen(100);
+
+                while (true)
+                {
+                    _socket.Accept();
+                }
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
         }
 
         /// <summary>
