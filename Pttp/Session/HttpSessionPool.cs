@@ -11,7 +11,8 @@ namespace Pttp.Session
     {
         #region Variable
         private static HttpSessionPool _instance = null;
-        private object _lockObj = null;
+        private object _lockObj = new object();
+        private List<HttpSession> _sessions = new List<HttpSession>(10);
         #endregion
 
         #region Property
@@ -35,9 +36,18 @@ namespace Pttp.Session
         }
         #endregion
 
+        private void Listen()
+        {
+        }
+
         private HttpSessionPool()
         {
-            _lockObj = new object();
+            Listen();
+        }
+
+        public void Dispose()
+        {
+
         }
     }
 }

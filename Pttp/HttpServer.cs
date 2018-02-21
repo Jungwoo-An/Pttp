@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Pttp.Session;
+using System;
 using System.Net;
 using System.Net.Sockets;
 
@@ -78,7 +79,8 @@ namespace Pttp
 
                 while (true)
                 {
-                    _socket.Accept();
+                    var client = _socket.Accept();
+                    var session = new HttpSession(client);
                 }
             }
             catch (Exception e)
