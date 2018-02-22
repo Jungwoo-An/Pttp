@@ -1,7 +1,9 @@
 ﻿using Pttp.Session;
 using System;
+using System.Diagnostics;
 using System.Net;
 using System.Net.Sockets;
+using System.Threading.Tasks;
 
 namespace Pttp
 {
@@ -82,8 +84,7 @@ namespace Pttp
                     var accepted = await _socket.AcceptAsync();
 
                     // 연결 된 클라이언트를 초기화 하고 세션 풀에 저장
-                    Action<Socket> InitSession = this.InitSession;
-                    InitSession.BeginInvoke(accepted, null, null);
+                    Task.Run(() => InitSession(accepted));
                 }
             }
             catch (Exception e)
