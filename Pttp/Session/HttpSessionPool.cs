@@ -16,7 +16,12 @@ namespace Pttp.Session
         #endregion
 
         #region Property
-        public HttpSessionPool Instance
+        public List<HttpSession> Session
+        {
+            get => _sessions;
+        }
+
+        public static HttpSessionPool Instance
         {
             get
             {
@@ -35,19 +40,9 @@ namespace Pttp.Session
             }
         }
         #endregion
-
-        private void Listen()
-        {
-        }
-
+        
         private HttpSessionPool()
         {
-            Listen();
-        }
-
-        public void Dispose()
-        {
-
         }
     }
 }
