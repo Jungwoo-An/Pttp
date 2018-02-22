@@ -5,7 +5,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Threading.Tasks;
 
-namespace Pttp
+namespace Pttp.Server
 {
     /// <summary>
     /// Http 서버 구현체
