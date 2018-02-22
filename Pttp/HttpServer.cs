@@ -16,6 +16,7 @@ namespace Pttp
         private Socket _socket;
         private IPEndPoint _host;
         private int _backlog = 100;
+        private Action<string> _logger;
         #endregion
 
         #region Property
@@ -42,6 +43,14 @@ namespace Pttp
         {
             get => _socket;
         }
+
+        /// <summary>
+        /// 로그 메시지를 받을 메소드입니다.
+        /// </summary>
+        internal Action<string> Log
+        {
+            get => _logger;
+        }
         #endregion
 
         /// <summary>
@@ -66,6 +75,18 @@ namespace Pttp
             return this;
         }
 
+        /// <summary>
+        /// HttpServer 의 로그 메시지를 받을 메소드를 설정합니다.
+        /// </summary>
+        /// <param name="logMethod"></param>
+        /// <returns></returns>
+        public HttpServer Logger(Action<string> logger)
+        {
+            _logger = logger;
+
+            return this;
+        }
+
         public async void Start()
         {
             if (_socket == null)
@@ -79,9 +100,13 @@ namespace Pttp
                 _socket.Bind(_host);
                 _socket.Listen(100);
 
+                _logger?.Invoke("HttpServer (이)가 시작되었습니다.");
+
                 while (true)
                 {
                     var accepted = await _socket.AcceptAsync();
+
+                    _logger?.Invoke($"클라이언트 연결: {accepted.RemoteEndPoint}");
 
                     // 연결 된 클라이언트를 초기화 하고 세션 풀에 저장
                     Task.Run(() => InitSession(accepted));
@@ -99,7 +124,7 @@ namespace Pttp
         /// <param name="client"></param>
         private void InitSession(Socket client)
         {
-            var session = new HttpSession(client);
+            var session = new HttpSession(this, client);
 
             HttpSessionPool.Instance.Session.Add(session);
         }
