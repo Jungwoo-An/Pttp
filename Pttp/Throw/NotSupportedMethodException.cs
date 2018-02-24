@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Pttp.Exception
+namespace Pttp.Throw
 {
-    public class NotSupportedMethodException : System.Exception
+    public class NotSupportedMethodException : Exception
     {
         public NotSupportedMethodException(string method) : base($"Not supported http method: {method}") { }
     }
