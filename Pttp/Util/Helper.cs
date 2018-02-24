@@ -9,6 +9,23 @@ namespace Pttp.Util
 {
     public static class Helper
     {
+        public static HttpRequest ParseRequest(string content)
+        {
+            if (string.IsNullOrWhiteSpace(content))
+            {
+                throw new InvalidRequestException();
+            }
+
+            var req = new HttpRequest();
+            var lines = content.Split('\r\n');
+            var readLine = 0;
+
+            // Request-line
+            ParseRequestLine(req, lines[readLine++]);
+
+            return req;
+        }
+
         /// <summary>
         /// Http request line 정보를 파싱합니다.
         /// </summary>
