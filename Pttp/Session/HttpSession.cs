@@ -1,4 +1,5 @@
 ﻿using Pttp.Server;
+using Pttp.Util;
 using System.Net.Sockets;
 using System.Text;
 
@@ -34,7 +35,8 @@ namespace Pttp.Session
                 sb.Append(Encoding.UTF8.GetString(buffer, 0, readSize));
             }
 
-            _server.Log?.Invoke($"클라이언트 메시지: {sb.ToString()}");
+            var req = Helper.ParseRequest(sb.ToString());
+            _server.Log?.Invoke($"Request {req.RequestHttpVersion}: {req.RequestUrl} [{req.Method}]");
         }
     }
 }

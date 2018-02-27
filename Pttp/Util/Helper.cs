@@ -17,7 +17,7 @@ namespace Pttp.Util
             }
 
             var req = new HttpRequest();
-            var lines = content.Split('\r\n');
+            var lines = content.Split('\r', '\n');
             var readLine = 0;
 
             // Request-line
