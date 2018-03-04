@@ -23,7 +23,8 @@ namespace Pttp.Util
 
             // Request-line
             ParseRequestLine(req, lines[readLine++]);
-
+            
+            // Request-header
             while (!string.IsNullOrEmpty(lines[readLine]))
             {
                 var line = lines[readLine++];
@@ -31,6 +32,13 @@ namespace Pttp.Util
 
                 req.Headers.Add(header.Key, header.Value);
             }
+
+            // CR + LF skip
+            readLine++;
+
+            // Request-body
+            var body = string.Join("\r\n", lines, readLine, lines.Length - readLine);
+            req.Content = body;
 
             return req;
         }
@@ -79,6 +87,11 @@ namespace Pttp.Util
             }
         }
 
+        /// <summary>
+        /// 주어진 스트링에서 key, value 의 형태로 header 를 파싱합니다.
+        /// </summary>
+        /// <param name="line"></param>
+        /// <returns></returns>
         public static KeyValuePair<string, string> ParseRequestHeader(string line)
         {
             var tokens = Regex.Split(line, ": ?");

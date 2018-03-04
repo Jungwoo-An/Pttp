@@ -37,6 +37,7 @@ namespace Pttp.Session
 
             var req = Helper.ParseRequest(sb.ToString());
             _server.Log?.Invoke($"Request {req.RequestHttpVersion}: {req.RequestUrl} [{req.Method}]");
+            _server.Log?.Invoke($"Content: {req.Content}");
         }
     }
 }
