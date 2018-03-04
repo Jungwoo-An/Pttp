@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace Pttp.Util
 {
@@ -17,11 +18,19 @@ namespace Pttp.Util
             }
 
             var req = new HttpRequest();
-            var lines = content.Split('\r', '\n');
+            var lines = Regex.Split(content, "\r\n");
             var readLine = 0;
 
             // Request-line
             ParseRequestLine(req, lines[readLine++]);
+
+            while (!string.IsNullOrEmpty(lines[readLine]))
+            {
+                var line = lines[readLine++];
+                var header = ParseRequestHeader(line);
+
+                req.Headers.Add(header.Key, header.Value);
+            }
 
             return req;
         }
@@ -68,6 +77,13 @@ namespace Pttp.Util
                 default:
                     return null;
             }
+        }
+
+        public static KeyValuePair<string, string> ParseRequestHeader(string line)
+        {
+            var tokens = Regex.Split(line, ": ?");
+
+            return new KeyValuePair<string, string>(tokens[0], tokens[1]);
         }
     }
 }
