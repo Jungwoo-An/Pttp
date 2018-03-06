@@ -8,7 +8,7 @@ using System.Text;
 namespace Pttp.Route
 {
     /// <summary>
-    /// Request 정보를 갖는 어트리뷰트로 사용 되는 클래스
+    /// 라우팅 정보를 갖는 어트리뷰트로 사용 되는 클래스
     /// </summary>
     public class HttpRoute : Attribute
     {

@@ -99,5 +99,28 @@ namespace Pttp.Util
 
             return new KeyValuePair<string, string>(tokens[0], tokens[1]);
         }
+        
+        /// <summary>
+        /// URL 을 입력 받아 정상적인 형태로 가공합니다. (/test/ => /test)
+        /// </summary>
+        /// <param name="url"></param>
+        /// <returns></returns>
+        public static string GetOriginUrl(string url)
+        {
+            var replace = Regex.Replace(url, @"\/$", "");
+            return replace == null || replace == String.Empty ? "/" : replace;
+        }
+
+        /// <summary>
+        /// URL 와 HTTP method 를 결합하여 스트링으로 반환합니다.
+        /// </summary>
+        /// <param name="url"></param>
+        /// <param name="method"></param>
+        /// <returns></returns>
+        public static string UrlWithMethod(string url, string method)
+        {
+            return $"{method.ToUpper()}:{GetOriginUrl(url)}";
+        }
+
     }
 }
