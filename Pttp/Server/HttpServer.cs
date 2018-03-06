@@ -1,7 +1,10 @@
-﻿using Pttp.Session;
+﻿using Pttp.Route;
+using Pttp.Session;
+using Pttp.Util;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Reflection;
@@ -85,6 +88,37 @@ namespace Pttp.Server
         public HttpServer Logger(Action<string> logger)
         {
             _logger = logger;
+
+            return this;
+        }
+
+        public HttpServer Pipe(string rootPath, Type routeClass)
+        {
+            var methods = routeClass.GetRuntimeMethods();
+            foreach (var method in methods)
+            {
+                var attributes = method.GetCustomAttributes();
+                var attrQuery = from attribute in attributes
+                                where attribute is HttpRoute
+                                select attribute as HttpRoute;
+
+                foreach (var attr in attrQuery) // 어트리뷰트는 항상 1개만 반환 됨. (중복 불가)
+                {
+                    var combineUrl = Helper.GetOriginUrl(rootPath) + Helper.GetOriginUrl(attr.Path);
+
+                    combineUrl = combineUrl.Replace("//", "/");
+                    if (combineUrl == null || combineUrl == String.Empty || combineUrl == "//")
+                    {
+                        combineUrl = "/";
+                    }
+
+                    attr.Invoker = method;
+
+                    _logger?.Invoke($"검색된 라우팅 메소드: {routeClass.FullName}.{attr.Invoker.Name}");
+
+                    HttpRoutePool.Instance.Add(Helper.UrlWithMethod(combineUrl, attr.Method.ToString()), attr);
+                }
+            }
 
             return this;
         }

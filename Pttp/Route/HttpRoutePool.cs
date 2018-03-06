@@ -10,7 +10,7 @@ namespace Pttp.Route
         #region Variable
         private static HttpRoutePool _instance = null;
         private static object _lockObj = new object();
-        private Dictionary<string, MethodInfo> _routes = new Dictionary<string, MethodInfo>();
+        private Dictionary<string, HttpRoute> _routes = new Dictionary<string, HttpRoute>();
         #endregion
 
         #region Property
@@ -31,6 +31,13 @@ namespace Pttp.Route
 
                 return _instance;
             }
+        }
+        #endregion
+
+        #region Method
+        public void Add(string path, HttpRoute httpRoute)
+        {
+            _routes.Add(path, httpRoute);
         }
         #endregion
 
