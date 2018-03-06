@@ -1,4 +1,5 @@
 ﻿using Pttp.Entity;
+using Pttp.Enums;
 using Pttp.Throw;
 using System;
 using System.Collections.Generic;
@@ -63,24 +64,24 @@ namespace Pttp.Util
         /// </summary>
         /// <param name="method"></param>
         /// <returns></returns>
-        public static HttpMethod ParseRequestMethod(string method)
+        public static Method? ParseRequestMethod(string method)
         {
             switch (method)
             {
                 case "GET":
-                    return HttpMethod.Get;
+                    return Method.GET;
 
                 case "POST":
-                    return HttpMethod.Post;
+                    return Method.POST;
 
                 case "PUT":
-                    return HttpMethod.Put;
+                    return Method.PUT;
 
                 case "DELETE":
-                    return HttpMethod.Delete;
+                    return Method.DELETE;
 
                 case "OPTIONS":
-                    return HttpMethod.Options;
+                    return Method.OPTIONS;
 
                 default:
                     return null;
