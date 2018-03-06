@@ -1,8 +1,10 @@
 ﻿using Pttp.Session;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Net;
 using System.Net.Sockets;
+using System.Reflection;
 using System.Threading.Tasks;
 
 namespace Pttp.Server
@@ -100,7 +102,7 @@ namespace Pttp.Server
                 _socket.Bind(_host);
                 _socket.Listen(100);
 
-                _logger?.Invoke("HttpServer (이)가 시작되었습니다.");
+                _logger?.Invoke($"HttpServer (이)가 {_host.Port} 에서 시작되었습니다.");
 
                 while (true)
                 {
@@ -125,8 +127,6 @@ namespace Pttp.Server
         private void InitSession(Socket client)
         {
             var session = new HttpSession(this, client);
-
-            HttpSessionPool.Instance.Session.Add(session);
         }
 
         /// <summary>
