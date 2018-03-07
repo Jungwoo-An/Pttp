@@ -1,9 +1,11 @@
 ﻿using Pttp.Entity;
 using Pttp.Route;
 using Pttp.Server;
+using Pttp.Throw;
 using Pttp.Util;
 using System.Net;
 using System.Net.Sockets;
+using System.Reflection;
 using System.Text;
 
 namespace Pttp.Session
@@ -48,12 +50,30 @@ namespace Pttp.Session
             var res = new HttpResponse();
 
             var route = HttpRoutePool.Instance.Get(req);
+            object content = null;
             if (route == null)
             {
                 // 404 NOT FOUND
                 res.StatusCode = HttpStatusCode.NotFound;
-                return;
             }
+            else
+            {
+                try
+                {
+                    content = route.Invoker.Invoke(null, new object[] { req, res });
+                }
+                catch (TargetParameterCountException ex)
+                {
+                    throw new RouteMethodInvalidException(route.Invoker.Name);
+                }
+            }
+
+            this.Response(res, content);
+        }
+
+        private void Response(HttpResponse res, object content)
+        {
+            _server.Log?.Invoke($"Response [{res.StatusCode}]: {content?.ToString()}");
         }
     }
 }
