@@ -55,7 +55,15 @@ namespace Pttp.Util
 
             var method = ParseRequestMethod(tokens[0]);
             req.Method = method ?? throw new NotSupportedMethodException(tokens[0]);
-            req.RequestUrl = tokens[1];
+
+            // RawUrl 에 불 필요한 정보를 제거
+            var url = Helper.GetOriginUrl(Regex.Replace(tokens[1], @"/?\?.*", ""));
+            if (url == null || url == String.Empty)
+            {
+                url = "/";
+            }
+
+            req.RequestUrl = url;
             req.RequestHttpVersion = tokens[2];
         }
 

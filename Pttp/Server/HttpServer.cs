@@ -112,11 +112,12 @@ namespace Pttp.Server
                         combineUrl = "/";
                     }
 
+                    combineUrl = Helper.UrlWithMethod(combineUrl, attr.Method.ToString());
                     attr.Invoker = method;
 
-                    _logger?.Invoke($"검색된 라우팅 메소드: {routeClass.FullName}.{attr.Invoker.Name}");
+                    _logger?.Invoke($"추가된 라우팅 메소드 [{combineUrl}]: {routeClass.FullName}.{attr.Invoker.Name}");
 
-                    HttpRoutePool.Instance.Add(Helper.UrlWithMethod(combineUrl, attr.Method.ToString()), attr);
+                    HttpRoutePool.Instance.Add(combineUrl, attr);
                 }
             }
 
