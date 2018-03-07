@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Net;
+using Pttp.Example.Controllers;
 using Pttp.Server;
 
 namespace Pttp.Example
@@ -17,6 +18,7 @@ namespace Pttp.Example
             {
                 server
                     .Logger(Log)
+                    .Pipe("/", typeof(TestController))
                     .Start();
 
                 Console.ReadLine();

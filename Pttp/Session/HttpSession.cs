@@ -58,6 +58,7 @@ namespace Pttp.Session
             {
                 // 404 NOT FOUND
                 res.StatusCode = HttpStatusCode.NotFound;
+                content = $"{req.Method} {req.RequestUrl} NOT FOUND";
             }
             else
             {
