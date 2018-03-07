@@ -9,5 +9,6 @@ namespace Pttp.Entity
     {
         public HttpStatusCode StatusCode { get; set; } = HttpStatusCode.OK;
         public string ContentType { get; set; }
+        public Dictionary<string, string> Headers { get; set; } = new Dictionary<string, string>();
     }
 }

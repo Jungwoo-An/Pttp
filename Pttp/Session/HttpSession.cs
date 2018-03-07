@@ -71,10 +71,10 @@ namespace Pttp.Session
                 }
             }
 
-            this.Response(res, content);
+            this.Response(req, res, content);
         }
 
-        private void Response(HttpResponse res, object content)
+        private void Response(HttpRequest req, HttpResponse res, object content)
         {
             if (string.IsNullOrEmpty(res.ContentType?.Trim()))
             {
@@ -95,9 +95,25 @@ namespace Pttp.Session
                 }
             }
 
+            var responseStr = new StringBuilder();
+            responseStr.Append($"{req.RequestHttpVersion} {(int)res.StatusCode} {res.StatusCode}\r\n");
+            responseStr.Append($"Content-Type: {res.ContentType}\r\n");
+
+            foreach (var header in res.Headers)
+            {
+                responseStr.Append($"{header.Key}: {header.Value}\r\n");
+            }
+
+            // body
+            responseStr.Append("\r\n");
+            responseStr.Append(content?.ToString());
+
 #if DEBUG
-            _server.Log?.Invoke($"Response [{res.StatusCode}] {res.ContentType}: {content?.ToString()}");
+            _server.Log?.Invoke($"Response [{res.StatusCode}] {res.ContentType}:\r\n{responseStr.ToString()}");
 #endif
+
+            _socket.Send(Encoding.UTF8.GetBytes(responseStr.ToString()));
+            _socket.Dispose();
         }
     }
 }
