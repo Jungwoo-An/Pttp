@@ -162,6 +162,7 @@ namespace Pttp.Server
         private void InitSession(Socket client)
         {
             var session = new HttpSession(this, client);
+            session.Init();
         }
 
         /// <summary>

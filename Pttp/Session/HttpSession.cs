@@ -1,5 +1,8 @@
-﻿using Pttp.Server;
+﻿using Pttp.Entity;
+using Pttp.Route;
+using Pttp.Server;
 using Pttp.Util;
+using System.Net;
 using System.Net.Sockets;
 using System.Text;
 
@@ -14,11 +17,9 @@ namespace Pttp.Session
         {
             _server = server;
             _socket = socket;
-
-            Init();
         }
 
-        private void Init(int readable = 4096)
+        public void Init(int readable = 4096)
         {
             var buffer = new byte[readable];
             var readSize = _socket.Receive(buffer);
@@ -38,6 +39,21 @@ namespace Pttp.Session
             var req = Helper.ParseRequest(sb.ToString());
             _server.Log?.Invoke($"Request {req.RequestHttpVersion}: {req.RequestUrl} [{req.Method}]");
             _server.Log?.Invoke($"Content: {req.Content}");
+
+            this.Handle(req);
+        }
+
+        private void Handle(HttpRequest req)
+        {
+            var res = new HttpResponse();
+
+            var route = HttpRoutePool.Instance.Get(req);
+            if (route == null)
+            {
+                // 404 NOT FOUND
+                res.StatusCode = HttpStatusCode.NotFound;
+                return;
+            }
         }
     }
 }

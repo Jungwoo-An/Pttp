@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Pttp.Entity;
+using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
@@ -38,6 +39,16 @@ namespace Pttp.Route
         public void Add(string path, HttpRoute httpRoute)
         {
             _routes.Add(path, httpRoute);
+        }
+
+        public HttpRoute Get(HttpRequest req)
+        {
+            if (!_routes.ContainsKey(req.RequestUrl))
+            {
+                return null;
+            }
+
+            return _routes[req.RequestUrl];
         }
         #endregion
 
