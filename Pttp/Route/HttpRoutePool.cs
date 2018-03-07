@@ -43,12 +43,13 @@ namespace Pttp.Route
 
         public HttpRoute Get(HttpRequest req)
         {
-            if (!_routes.ContainsKey(req.RequestUrl))
+            var url = $"{req.Method.ToString().ToUpper()}:{req.RequestUrl}";
+            if (!_routes.ContainsKey(url))
             {
                 return null;
             }
 
-            return _routes[req.RequestUrl];
+            return _routes[url];
         }
         #endregion
 

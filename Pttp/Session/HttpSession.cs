@@ -3,6 +3,7 @@ using Pttp.Route;
 using Pttp.Server;
 using Pttp.Throw;
 using Pttp.Util;
+using System.IO;
 using System.Net;
 using System.Net.Sockets;
 using System.Reflection;
@@ -39,8 +40,10 @@ namespace Pttp.Session
             }
 
             var req = Helper.ParseRequest(sb.ToString());
+#if DEBUG
             _server.Log?.Invoke($"Request {req.RequestHttpVersion}: {req.RequestUrl} [{req.Method}]");
             _server.Log?.Invoke($"Content: {req.Content}");
+#endif
 
             this.Handle(req);
         }
@@ -73,7 +76,28 @@ namespace Pttp.Session
 
         private void Response(HttpResponse res, object content)
         {
-            _server.Log?.Invoke($"Response [{res.StatusCode}]: {content?.ToString()}");
+            if (string.IsNullOrEmpty(res.ContentType?.Trim()))
+            {
+                if (content is string)
+                {
+                    res.ContentType = "text/html";
+                }
+                else if (content is FileInfo)
+                {
+                    var extension = ((FileInfo)content).Extension;
+                    if (Helper.MimeTypeTable.ContainsKey(extension)) {
+                        res.ContentType = Helper.MimeTypeTable[extension];
+                    }
+                }
+                else if (content is object)
+                {
+                    res.ContentType = "text/plain";
+                }
+            }
+
+#if DEBUG
+            _server.Log?.Invoke($"Response [{res.StatusCode}] {res.ContentType}: {content?.ToString()}");
+#endif
         }
     }
 }

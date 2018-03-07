@@ -115,7 +115,9 @@ namespace Pttp.Server
                     combineUrl = Helper.UrlWithMethod(combineUrl, attr.Method.ToString());
                     attr.Invoker = method;
 
+#if DEBUG
                     _logger?.Invoke($"추가된 라우팅 메소드 [{combineUrl}]: {routeClass.FullName}.{attr.Invoker.Name}");
+#endif
 
                     HttpRoutePool.Instance.Add(combineUrl, attr);
                 }
@@ -137,13 +139,17 @@ namespace Pttp.Server
                 _socket.Bind(_host);
                 _socket.Listen(100);
 
+#if DEBUG
                 _logger?.Invoke($"HttpServer (이)가 {_host.Port} 에서 시작되었습니다.");
+#endif
 
                 while (true)
                 {
                     var accepted = await _socket.AcceptAsync();
 
+#if DEBUG
                     _logger?.Invoke($"클라이언트 연결: {accepted.RemoteEndPoint}");
+#endif
 
                     // 연결 된 클라이언트를 초기화 하고 세션 풀에 저장
                     Task.Run(() => InitSession(accepted));
